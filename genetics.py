@@ -34,12 +34,27 @@ def make_eq(powr,cofnt,i=0,result=""):
     example:
     >>>make_eq(powr,cofnt)
     (1a^2)+(-1b^2)+(1c^2)+(1d^2)+(1e^2)+0= 0
-    '''
-    for x in powr:
-        for y in cofnt:
-            result+= "(%i%s^%s)+" %(int(y),ab[i],int(x))
-            i+=1
-        break
+    '''    
+    z=load_data("input.txt",cofnt,powr)
+    for x,y in z:
+        if x==1 and y!=1 and y!=0:
+            result+= " %s^%s +" %(ab[i],y)
+        elif y==1 and x>0 and x!=1:
+            result+= " %i%s +" %(x,ab[i])
+            
+        elif y==1 and x<0 and x!=-1:
+            result+= " (%i)%s +" %(x,ab[i])
+        elif y==1 and x==-1:
+            result+= " (-%s) +" %(ab[i])
+        elif y!=1 and x==-1:
+            result+= " (-%s)^%i +" %(ab[i],y)    
+        elif y==1 and x==1:
+            result+= " %s +" %(ab[i])
+        elif y==0 or x==0:
+            i-=1
+        else:
+            result+= " (%i%s)^%s +" %(x,ab[i],y)
+        i+=1
     return result+"0= 0"
 
 
@@ -105,7 +120,7 @@ def fitness(indiv, target=0):
     sum =summs(powr,cofnt,indiv)
     return abs(target-sum)
 
-load_data("input.txt",cofnt,powr)
+#load_data("input.txt",cofnt,powr)
 print make_eq(powr,cofnt)
 indiv1=individual(5,-100,100)
 print indiv1
