@@ -1,12 +1,14 @@
 from random import randint
+#from operator import add 
 import numpy
 
-cofnt=[]    #coefficient blank list
-powr=[]     #power blank list
-#latin alphabet for binomial equation 
+cofnt=[]    # coefficient blank list
+powr=[]     # power blank list
+equla=[]    # random calculated blank list
+# latin alphabet for binomial equation 
 ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
 
-def load_data(file,cofnt=[],powr=[]):
+def load_data(file1,cofnt=[],powr=[]):
     '''
     dsc: loads Coefficient and Power into seperate lists 
     from .txt file
@@ -14,7 +16,7 @@ def load_data(file,cofnt=[],powr=[]):
     >>>load_data("input.txt",cofnt,powr)
     [('8', '2'), ('3', '3'), ('2', '4'), ('5', '2'), ('1', '5')]
     '''
-    f = open(file)
+    f = open(file1)
     c=[]
     c+= f.readline().split()
     for ch in c:
@@ -41,7 +43,6 @@ def make_eq(powr,cofnt,i=0,result=""):
             result+= " %s^%s +" %(ab[i],y)
         elif y==1 and x>0 and x!=1:
             result+= " %i%s +" %(x,ab[i])
-            
         elif y==1 and x<0 and x!=-1:
             result+= " (%i)%s +" %(x,ab[i])
         elif y==1 and x==-1:
@@ -58,14 +59,14 @@ def make_eq(powr,cofnt,i=0,result=""):
     return result+"0= 0"
 
 
-def len_eq(file,result="",i=0):
+def len_eq(file1,result="",i=0):
     '''
     (filestr)->int
     dsc: to findout length of equation
     >>len_eq("input.txt")
     5
     '''
-    f = open(file)
+    f = open(file1)
     y= f.readline().split()
     for ch in y:
         i+=1                        #result+=ch
@@ -85,7 +86,7 @@ def individual(length, low, high):
     return [randint(low,high) for i in xrange(length)]
 
 
-def summs(powr,cofnt,indiv):
+def summs(powr,cofnt,indiv,equla=[]):
     '''
     (list,list,list)->int
     dsc: summation of equation with real number
@@ -96,16 +97,17 @@ def summs(powr,cofnt,indiv):
     pr = numpy.array(powr)
     cr = numpy.array(cofnt)
     ir = numpy.array(indiv)
+    equla+= (cr*(ir**pr)).tolist()
     return sum(cr*(ir**pr))
 
 
-from operator import add   
+  
 def chromosome(count, length, low, high):
     '''
     (int,int,int,int)->list
     dsc: Create a number of random individuals as a chromosome
     example:
-    >>>chromosome(3,5,0,100)
+    >>>chromosome(3,5,-100,100)
     [[94, 99, 59, 77, 48], [100, 100, 87, 80, 38], [5, 100, 92, 18, 75]]
     '''
     return [individual(length, low, high) for i in xrange(count)]
@@ -114,15 +116,29 @@ def fitness(indiv, target=0):
     '''
     (list,int)->int
     dsc: returns fitnes of each individual (lower is better)
-    >>>fitness(indiv)
+    >>>fitness([1, 15, -80, -14, 48])
+    6350
     '''
     #sum = reduce(add, individual, 0)
-    sum =summs(powr,cofnt,indiv)
-    return abs(target-sum)
+    summ =summs(powr,cofnt,indiv)
+    return abs(target-summ)
 
 #load_data("input.txt",cofnt,powr)
 print make_eq(powr,cofnt)
 indiv1=individual(5,-100,100)
 print indiv1
-print summs(powr,cofnt,indiv1)
+summs(powr,cofnt,indiv1)
 print fitness(indiv1)
+
+chor1=chromosome(3,5,-100,100)
+print chor1
+def score(chor, target=0):
+    '''
+    dsc: Find average fitness for a chromosome
+    >>>score([[52, -40, 65, 35, 6], [59, 22, -78, -59, 50], [86, -90, 14, -47, 22]])
+    3469.66666667
+    '''
+    summ= sum([fitness(x, target) for x in chor])
+    return summ / (len(chor) * 1.0)
+    
+print score(chor1)
