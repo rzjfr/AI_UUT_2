@@ -1,30 +1,33 @@
-from random import randint
-from operator import add
+cofnt=[]
+powr=[]
+ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
 
-def individual(length, low, high):
+def load_data(file,cofnt=[],powr=[]):
     '''
-    (int,int,int)->list
-    dsc: Create a random list as a member of the population.
+    dsc: loads Coefficient and Power into seperate lists 
+    from .txt file
     example:
-    >>>individual(5,0,100)
-    [92, 21, 75, 66, 70]
+    >>>load_data("input.txt",cofnt,powr)
+    [('8', '2'), ('3', '3'), ('2', '4'), ('5', '2'), ('1', '5')]
     '''
-    return [randint(low,high) for i in xrange(length)]
-
-def population(count, length, low, high):
+    f = open(file)
+    cofnt+= f.readline().split()
+    powr+= f.readline().split()
+    f.close()
+    return zip(cofnt,powr)
+load_data("input.txt",cofnt,powr)
+def make_eq(powr,cofnt,i=0,result=""):
     '''
-    (int,int,int,int)->list
-    dsc: Create a number of random individuals as a population
+    (list,list)->str
+    dsc: returns an equation of imported data
     example:
-    >>>population(3,5,0,100)
-    [[94, 99, 59, 77, 48], [100, 100, 87, 80, 38], [5, 100, 92, 18, 75]]
+    >>>make_eq(powr,cofnt)
+    1a^2 + 1b^2 + 1c^2 + 1d^2 + 1e^2 + 0 =0
     '''
-    return [individual(length, low, high) for i in xrange(count)]
-
-def fitness(individual, target):
-    '''
-    (int,int)->int
-    dsc: returns fitnes of each individual 
-    '''
-    sum = reduce(add, individual, 0)
-    return abs(target-sum)
+    for x in powr:
+        for y in cofnt:
+            result+= "%s%s^%s + " %(y,ab[i],x)
+            i+=1
+        break
+    return result+"0 =0"
+print make_eq(powr,cofnt)
