@@ -1,6 +1,9 @@
 from random import randint
-cofnt=[]
-powr=[]
+import numpy
+
+cofnt=[]    #coefficient blank list
+powr=[]     #power blank list
+#latin alphabet for binomial equation 
 ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
 
 def load_data(file,cofnt=[],powr=[]):
@@ -12,8 +15,14 @@ def load_data(file,cofnt=[],powr=[]):
     [('8', '2'), ('3', '3'), ('2', '4'), ('5', '2'), ('1', '5')]
     '''
     f = open(file)
-    cofnt+= f.readline().split()
-    powr+= f.readline().split()
+    c=[]
+    c+= f.readline().split()
+    for ch in c:
+        cofnt.append(int(ch))
+    p=[]
+    p+= f.readline().split()
+    for ch in p:
+        powr.append(int(ch))
     f.close()
     return zip(cofnt,powr)
 load_data("input.txt",cofnt,powr)
@@ -59,14 +68,15 @@ def individual(length, low, high):
     [-90, 87, -80, 52, 71]
     '''
     return [randint(low,high) for i in xrange(length)]
-indiv=individual(5,-100,100)
-import numpy
+#indiv1=individual(5,-100,100)
+
 def summs(powr,cofnt,indiv):
     '''
     (list,list,list)->int
     dsc: summation of equation with real number
     exmple:
-    
+    >>>summs([1,1,1,1,1],[-3,1,1,1,1],[1,-1,1,1,1])
+    -1
     '''
     
     pr = numpy.array(powr)
@@ -74,8 +84,8 @@ def summs(powr,cofnt,indiv):
     ir = numpy.array(indiv)
     print cr*(ir**pr)
     return sum(cr*(ir**pr))
-
-print summs([1,1,1,1,1],[-3,1,1,1,1],[1,-1,1,1,1])
+print cofnt
+#print summs([1,1,1,1,1],[1,1,1,1,1],indiv1)
 
 from operator import add   
 def chromosome(count, length, low, high):
@@ -87,11 +97,14 @@ def chromosome(count, length, low, high):
     [[94, 99, 59, 77, 48], [100, 100, 87, 80, 38], [5, 100, 92, 18, 75]]
     '''
     return [individual(length, low, high) for i in xrange(count)]
-def fitness(individual, target):
+
+def fitness(indiv, target=0):
     '''
     (list,int)->int
     dsc: returns fitnes of each individual (lower is better)
+    >>>fitness(indiv)
     '''
-    sum = reduce(add, individual, 0)
+    #sum = reduce(add, individual, 0)
+    sum =summs(powr,cofnt,indiv)
     return abs(target-sum)
-
+#print indiv1
