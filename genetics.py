@@ -25,7 +25,7 @@ def load_data(file,cofnt=[],powr=[]):
         powr.append(int(ch))
     f.close()
     return zip(cofnt,powr)
-load_data("input.txt",cofnt,powr)
+
 
 def make_eq(powr,cofnt,i=0,result=""):
     '''
@@ -68,7 +68,7 @@ def individual(length, low, high):
     [-90, 87, -80, 52, 71]
     '''
     return [randint(low,high) for i in xrange(length)]
-#indiv1=individual(5,-100,100)
+
 
 def summs(powr,cofnt,indiv):
     '''
@@ -78,14 +78,11 @@ def summs(powr,cofnt,indiv):
     >>>summs([1,1,1,1,1],[-3,1,1,1,1],[1,-1,1,1,1])
     -1
     '''
-    
     pr = numpy.array(powr)
     cr = numpy.array(cofnt)
     ir = numpy.array(indiv)
-    print cr*(ir**pr)
     return sum(cr*(ir**pr))
-print cofnt
-#print summs([1,1,1,1,1],[1,1,1,1,1],indiv1)
+
 
 from operator import add   
 def chromosome(count, length, low, high):
@@ -107,4 +104,10 @@ def fitness(indiv, target=0):
     #sum = reduce(add, individual, 0)
     sum =summs(powr,cofnt,indiv)
     return abs(target-sum)
-#print indiv1
+
+load_data("input.txt",cofnt,powr)
+print make_eq(powr,cofnt)
+indiv1=individual(5,-100,100)
+print indiv1
+print summs(powr,cofnt,indiv1)
+print fitness(indiv1)
