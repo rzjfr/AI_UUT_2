@@ -78,7 +78,7 @@ def len_eq(file1,result="",i=0):
 def individual(length, low, high):
     '''
     (int,int,int)->list
-    dsc: Create a random list as a member of the chromosome.
+    dsc: Create a random list as a member of the population.
     example:
     >>>individual(5,-100,100)
     [-90, 87, -80, 52, 71]
@@ -102,12 +102,12 @@ def summs(powr,cofnt,indiv,equla=[]):
 
 
   
-def chromosome(count, length, low, high):
+def population(count, length, low, high):
     '''
     (int,int,int,int)->list
-    dsc: Create a number of random individuals as a chromosome
+    dsc: Create a number of random individuals as a population
     example:
-    >>>chromosome(3,5,-100,100)
+    >>>population(3,5,-100,100)
     [[94, 99, 59, 77, 48], [100, 100, 87, 80, 38], [5, 100, 92, 18, 75]]
     '''
     return [individual(length, low, high) for i in xrange(count)]
@@ -123,22 +123,33 @@ def fitness(indiv, target=0):
     summ =summs(powr,cofnt,indiv)
     return abs(target-summ)
 
-#load_data("input.txt",cofnt,powr)
-print make_eq(powr,cofnt)
-indiv1=individual(5,-100,100)
-print indiv1
-summs(powr,cofnt,indiv1)
-print fitness(indiv1)
-
-chor1=chromosome(3,5,-100,100)
-print chor1
-def score(chor, target=0):
+def score(popn, target=0):
     '''
-    dsc: Find average fitness for a chromosome
+    (list)->float
+    dsc: Find average fitness for a population
     >>>score([[52, -40, 65, 35, 6], [59, 22, -78, -59, 50], [86, -90, 14, -47, 22]])
     3469.66666667
     '''
-    summ= sum([fitness(x, target) for x in chor])
-    return summ / (len(chor) * 1.0)
-    
-print score(chor1)
+    summ= sum([fitness(x, target) for x in popn])
+    return summ / (len(popn) * 1.0)
+
+def generation(popn,target=0):
+    scored = [ (fitness(x, target), x) for x in popn]
+    scored = [ x[1] for x in sorted(scored)]
+
+'''=========================TEST====================================='''
+low=-100
+high=100
+popltn=10
+length=len_eq("input.txt")
+
+#load_data("input.txt",cofnt,powr)
+print "Equation:",make_eq(powr,cofnt),"\n"
+
+indiv1=individual(length,low,high)
+print indiv1
+print summs(powr,cofnt,indiv1),"\n"
+
+popn1=population(10,length,low,high)
+print popn1
+print score(popn1)
