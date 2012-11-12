@@ -1,6 +1,7 @@
 from random import randint,random
 #from operator import add 
-import numpy
+#import numpy
+#from checkbox.user_interface import NEXT
 
 cofnt=[]    # coefficient blank list
 powr=[]     # power blank list
@@ -57,7 +58,7 @@ def make_eq(powr,cofnt,i=0,result=""):
         else:
             result+= " (%i%s)^%s +" %(x,ab[i],y)
         i+=1
-    return result+"0= 0"
+    return result+" 0 = 0"
 
 
 def len_eq(file1,result="",i=0):
@@ -87,7 +88,7 @@ def individual(length, low, high):
     return [randint(low,high) for i in xrange(length)]
 
 
-def summs(powr,cofnt,indiv,equla=[]):
+def summs(powr,cofnt,indiv,equla=[],i=0):
     '''
     (list,list,list)->int
     dsc: summation of equation with real number
@@ -95,13 +96,18 @@ def summs(powr,cofnt,indiv,equla=[]):
     >>>summs([1,1,1,1,1],[-3,1,1,1,1],[1,-1,1,1,1])
     -1
     '''
-    pr = numpy.array(powr)
-    cr = numpy.array(cofnt)
-    ir = numpy.array(indiv)
-    equla+= (cr*(ir**pr)).tolist()
-    return sum(cr*(ir**pr))
+    result=0
+    for x in xrange(len(powr)):
+        result+=cofnt[i]*(indiv[i]**powr[i])
+        i+=1
+    return result
+    #pr = numpy.array(powr)
+    #cr = numpy.array(cofnt)
+    #ir = numpy.array(indiv)
+    #equla+= (cr*(ir**pr)).tolist()
+    #return sum(cr*(ir**pr))
 
-
+#print summs([1,1,1,1,1],[-3,1,1,1,1],[1,-1,1,1,1])
   
 def population(count, length, low, high):
     '''
@@ -136,24 +142,24 @@ def score(popn, target=0):
 
 def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
     scored = [ (fitness(x, target), x) for x in popn]   # a list contains each individual with fitness
-    print scored
+    #print scored
     scored = [ x[1] for x in sorted(scored)]            # removing fittness from sorted list
-    print scored
+    #print scored
     '''=======================
     Chosing parents for childs
     ======================='''
     '''Eletisim'''
     len_elit = int(len(scored)*elit_rate)   # we use elite individuals as a parent for next generation
     parents = scored[:len_elit]             # the result is awsome! i get 25 fitness score with only 20 idividuals 
-    print parents
-    for s in parents:
-        print fitness(s)
+    #print parents
+    #for s in parents:
+    #    print fitness(s)
     
     '''Tournoment'''
     for individual in scored[len_elit:]:    # tournoment is Roulette Wheel Selection 
         if tour_rate > random():            # here we choose randomly from scored population
             parents.append(individual)      # so the higher fitnessed indiv. have more chance
-    print parents
+    #print parents
     
     
     '''========================
@@ -166,7 +172,7 @@ def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_ra
             # here we change the random positon with random number
             # betwean the lowest and highest number in indiv.
             individual[pos_mut] = randint(min(individual), max(individual))
-    print parents
+    #print parents
     
     
     '''Crossover'''
@@ -183,7 +189,9 @@ def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_ra
             child = parent1[:pivot] + parent2[pivot:]
             children.append(child)
     parents.extend(children)        # mutaded parents and children creats next generation
-    print parents
+    #print parents
+    #print score(parents)
+    return parents
 '''=========================TEST==================================='''
 low=-100
 high=100
@@ -194,15 +202,20 @@ length=len_eq("input.txt")
 print "Equation:",make_eq(powr,cofnt),"\n"
 
 indiv1=individual(length,low,high)
-print indiv1
-print summs(powr,cofnt,indiv1),"\n"
+#print indiv1
+#print summs(powr,cofnt,indiv1),"\n"
 
 popn1=population(popltn,length,low,high)
-print popn1
+#print popn1
 print score(popn1),"\n"
 
-generation(popn1)
+next_gen=generation(popn1)
 
+#for i in xrange(50):
+#    print score(next_gen)
+#    next_gen = generation(next_gen)
+#    if score(next_gen)==0:
+#        break
 
 # cross over test
 parent1 = [1,2,3,4,5,6]
