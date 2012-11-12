@@ -32,12 +32,13 @@ def load_data(file1,cofnt=[],powr=[]):
 def make_eq(powr,cofnt,i=0,result=""):
     '''
     (list,list)->str
-    dsc: returns an equation of imported data
+    dsc: loads data and returns an equation of imported data
     example:
-    >>>make_eq(powr,cofnt)
-    (1a^2)+(-1b^2)+(1c^2)+(1d^2)+(1e^2)+0= 0
+    >>>make_eq([1 2 -1 1 -1 ],[+1 +1 2 1 1])
+    a + 2b + (-c)^2 + d + (-e) +0= 0
     '''    
     z=load_data("input.txt",cofnt,powr)
+    # at this point we want a flexible equation appearance
     for x,y in z:
         if x==1 and y!=1 and y!=0:
             result+= " %s^%s +" %(ab[i],y)
@@ -69,9 +70,9 @@ def len_eq(file1,result="",i=0):
     f = open(file1)
     y= f.readline().split()
     for ch in y:
-        i+=1                        #result+=ch
+        i+=1                    #result+=ch
     f.close()
-    return i                        #len(result)/2
+    return i                    #len(result)/2
     
 
 
@@ -119,9 +120,9 @@ def fitness(indiv, target=0):
     >>>fitness([1, 15, -80, -14, 48])
     6350
     '''
-    #sum = reduce(add, individual, 0)
+    # sum = reduce(add, individual, 0)
     summ =summs(powr,cofnt,indiv)
-    return abs(target-summ)
+    return abs(target-summ)     # goal is reaching 0.0
 
 def score(popn, target=0):
     '''
@@ -133,24 +134,40 @@ def score(popn, target=0):
     summ= sum([fitness(x, target) for x in popn])
     return summ / (len(popn) * 1.0)
 
-def generation(popn,target=0,elitism=0.05,crossover=0.75,mutation=0.15,tournoment=0.15):
+def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
     scored = [ (fitness(x, target), x) for x in popn]   # a list contains each individual with fitness
-    #print scored
-    scored = [ x[1] for x in sorted(scored)]            # removing fittness from sorted list
     print scored
-    
-    len_elit = int(len(scored)*elitism)                 # we use elite individuals as a parent for next generation
-    parents = scored[:len_elit]
+    scored = [ x[1] for x in sorted(scored)]            # removing fittness from sorted list
+    # print scored
+    '''=======================
+    Chosing parents for childs
+    ======================='''
+    '''Eletisim'''
+    len_elit = int(len(scored)*elit_rate)   # we use elite individuals as a parent for next generation
+    parents = scored[:len_elit]             # the result is awsome! i get 25 fitness score with only 20 idividuals 
     print parents
     for s in parents:
         print fitness(s)
     
-    
-    for individual in scored[len_elit:]:                # tournoment i think is choosing randomly, maybe!
-        if tournoment > random():
-            parents.append(individual)
-    
+    '''Tournoment'''
+    for individual in scored[len_elit:]:    # tournoment is Roulette Wheel Selection 
+        if tour_rate > random():            # here we choose randomly from scored population
+            parents.append(individual)      # so the higher fitnessed indiv. have more chance
     print parents
+    
+    
+    '''========================
+    Next generation individuals
+    ========================'''
+    '''Mutation'''
+    for individual in parents:
+        if mut_rate > random():
+            pos_mut = randint(0, len(individual)-1)
+            # here we change the random positon with random number
+            # betwean the lowest and highest number in indiv.
+            individual[pos_mut] = randint(min(individual), max(individual))
+    print parents
+    
 '''=========================TEST==================================='''
 low=-100
 high=100
@@ -176,3 +193,4 @@ parent1 = [1,2,3,4,5,6]
 parent2 = ['a','b','c','d','e','f']
 child = parent1[:3] + parent2[3:]
 print "\n",child
+'''=========================TEST=ENDS=============================='''
