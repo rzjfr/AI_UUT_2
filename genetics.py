@@ -1,4 +1,4 @@
-from random import randint
+from random import randint,random
 #from operator import add 
 import numpy
 
@@ -144,8 +144,14 @@ def generation(popn,target=0,elitism=0.05,crossover=0.75,mutation=0.15,tournomen
     print parents
     for s in parents:
         print fitness(s)
-
-'''=========================TEST====================================='''
+    
+    
+    for individual in scored[len_elit:]:                # tournoment i think is choosing randomly, maybe!
+        if tournoment > random():
+            parents.append(individual)
+    
+    print parents
+'''=========================TEST==================================='''
 low=-100
 high=100
 popltn=20
