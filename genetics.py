@@ -70,9 +70,9 @@ def len_eq(file1,result="",i=0):
     f = open(file1)
     y= f.readline().split()
     for ch in y:
-        i+=1                    #result+=ch
+        i+=1#result+=ch
     f.close()
-    return i                    #len(result)/2
+    return i#len(result)/2
     
 
 
@@ -138,7 +138,7 @@ def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_ra
     scored = [ (fitness(x, target), x) for x in popn]   # a list contains each individual with fitness
     print scored
     scored = [ x[1] for x in sorted(scored)]            # removing fittness from sorted list
-    # print scored
+    print scored
     '''=======================
     Chosing parents for childs
     ======================='''
@@ -168,6 +168,22 @@ def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_ra
             individual[pos_mut] = randint(min(individual), max(individual))
     print parents
     
+    
+    '''Crossover'''
+    len_parents = len(parents)
+    len_rest = len(popn) - len_parents          # we crossover for rest of population
+    children = []                               # here we keep the children
+    while len(children) < len_rest:
+        parent1 = randint(0, len_parents-1)
+        parent2 = randint(0, len_parents-1)
+        if parent1 != parent2:
+            parent1 = parents[parent1]
+            parent2 = parents[parent2]
+            pivot = len(parent1) / 2            # pivot is half of indiv.
+            child = parent1[:pivot] + parent2[pivot:]
+            children.append(child)
+    parents.extend(children)        # mutaded parents and children creats next generation
+    print parents
 '''=========================TEST==================================='''
 low=-100
 high=100
@@ -188,7 +204,7 @@ print score(popn1),"\n"
 generation(popn1)
 
 
-
+# cross over test
 parent1 = [1,2,3,4,5,6]
 parent2 = ['a','b','c','d','e','f']
 child = parent1[:3] + parent2[3:]
