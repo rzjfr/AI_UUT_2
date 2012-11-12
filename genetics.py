@@ -133,14 +133,22 @@ def score(popn, target=0):
     summ= sum([fitness(x, target) for x in popn])
     return summ / (len(popn) * 1.0)
 
-def generation(popn,target=0):
-    scored = [ (fitness(x, target), x) for x in popn]
-    scored = [ x[1] for x in sorted(scored)]
+def generation(popn,target=0,elitism=0.05,crossover=0.75,mutation=0.15,tournoment=0.15):
+    scored = [ (fitness(x, target), x) for x in popn]   # a list contains each individual with fitness
+    #print scored
+    scored = [ x[1] for x in sorted(scored)]            # removing fittness from sorted list
+    print scored
+    
+    len_elit = int(len(scored)*elitism)                 # we use elite individuals as a parent for next generation
+    parents = scored[:len_elit]
+    print parents
+    for s in parents:
+        print fitness(s)
 
 '''=========================TEST====================================='''
 low=-100
 high=100
-popltn=10
+popltn=20
 length=len_eq("input.txt")
 
 #load_data("input.txt",cofnt,powr)
@@ -150,6 +158,15 @@ indiv1=individual(length,low,high)
 print indiv1
 print summs(powr,cofnt,indiv1),"\n"
 
-popn1=population(10,length,low,high)
+popn1=population(popltn,length,low,high)
 print popn1
-print score(popn1)
+print score(popn1),"\n"
+
+generation(popn1)
+
+
+
+parent1 = [1,2,3,4,5,6]
+parent2 = ['a','b','c','d','e','f']
+child = parent1[:3] + parent2[3:]
+print "\n",child
