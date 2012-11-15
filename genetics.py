@@ -1,8 +1,4 @@
 from random import randint,random
-#from operator import add 
-#import numpy
-#from checkbox.user_interface import NEXT
-
 cofnt=[]    # coefficient blank list
 powr=[]     # power blank list
 equla=[]    # random calculated blank list
@@ -126,7 +122,7 @@ def fitness(indiv, target=0):
     >>>fitness([1, 15, -80, -14, 48])
     6350
     '''
-    # sum = reduce(add, individual, 0)
+    # summ = reduce(add, individual, 0)
     summ =summs(powr,cofnt,indiv)
     return abs(target-summ)     # goal is reaching 0.0
 
@@ -140,42 +136,51 @@ def score(popn, target=0):
     summ= sum([fitness(x, target) for x in popn])
     return summ / (len(popn) * 1.0)
 
-def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
-    scored = [ (fitness(x, target), x) for x in popn]   # a list contains each individual with fitness
-    #print scored
+def generation(popn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
+    scored = [ (fitness(x), x) for x in popn]   # a list contains each individual with fitness
     scored = [ x[1] for x in sorted(scored)]            # removing fittness from sorted list
-    #print scored
+    print "scr:",scored
     '''=======================
     Chosing parents for childs
     ======================='''
     '''Eletisim'''
-    len_elit = int(len(scored)*elit_rate)   # we use elite individuals as a parent for next generation
-    parents = scored[:len_elit]             # the result is awsome! i get 25 fitness score with only 20 idividuals 
-    #print parents
-    #for s in parents:
+    len_elit = int(len(scored)*elit_rate)   # now we use elitism to send best indiv. to next_popn
+    next_popn = scored[:len_elit]           # next population 
+    
+    cur_popn=scored[len_elit:]              # we will use this later
+    #print next_popn
+    #for s in next_popn:
     #    print fitness(s)
+    
+    print "nxt:",next_popn
+    print "cur:",cur_popn
     
     '''Tournoment'''
     for individual in scored[len_elit:]:    # tournoment is Roulette Wheel Selection 
         if tour_rate > random():            # here we choose randomly from scored population
-            parents.append(individual)      # so the higher fitnessed indiv. have more chance
-    #print parents
+            next_popn.append(individual)    # so the higher fitnessed indiv. have more chance
     
     
     '''========================
     Next generation individuals
     ========================'''
     '''Mutation'''
-    for individual in parents:
+    for individual in next_popn:
         if mut_rate > random():
             pos_mut = randint(0, len(individual)-1)
             # here we change the random positon with random number
             # betwean the lowest and highest number in indiv.
             individual[pos_mut] = randint(min(individual), max(individual))
-    #print parents
+    #print next_popn
     
-    
-    '''Crossover'''
+    len_cur =len(next_popn)             # current lenght of next population
+    len_rest= len(popn)-len_cur        # to fill rest of population
+    print len_rest
+    children=[]
+    if len_rest%2 !=0:
+        print scored[len_rest]
+    '''
+    #Crossover
     len_parents = len(parents)
     len_rest = len(popn) - len_parents          # we crossover for rest of population
     children = []                               # here we keep the children
@@ -188,31 +193,55 @@ def generation(popn,target=0,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_ra
             pivot = len(parent1) / 2            # pivot is half of indiv.
             child = parent1[:pivot] + parent2[pivot:]
             children.append(child)
+        print len(children),len_rest
     parents.extend(children)        # mutaded parents and children creats next generation
     #print parents
     #print score(parents)
     return parents
+    '''
 '''=========================TEST==================================='''
 low=-100
 high=100
 popltn=20
 length=len_eq("input.txt")
 
+
+
+
 #load_data("input.txt",cofnt,powr)
 print "Equation:",make_eq(powr,cofnt),"\n"
 
-indiv1=individual(length,low,high)
+#indiv1=individual(length,low,high)
 #print indiv1
+
 #print summs(powr,cofnt,indiv1),"\n"
 
 popn1=population(popltn,length,low,high)
-#print popn1
-print score(popn1),"\n"
+print "pop:",popn1
 
-next_gen=generation(popn1)
 
-#for i in xrange(50):
-#    print score(next_gen)
+def crossover(parent1,parent2,length):
+    '''(list,list,int)->list of list
+    dsc:
+    with random point as pivot to cross over given parents
+    
+    example: pivot is 3
+    >>> crossover([-54, 64, 56, -37, -56],[43, 93, -57, -94, -57],5)
+    [[43, 93, -57, -37, -56], [-54, 64, 56, -94, -57]]
+    '''
+    pivot = randint(1, length-1)
+    print pivot
+    child = parent1[:pivot] + parent2[pivot:]
+    parent1 = parent2[:pivot] + parent1[pivot:]
+    parent2 = child
+    return [parent1,parent2]
+    
+#print score(popn1),"\n"
+#next_gen=population(popltn,length,low,high)
+generation(popn1)
+
+#for i in xrange(3):
+    #print score(next_gen)
 #    next_gen = generation(next_gen)
 #    if score(next_gen)==0:
 #        break
@@ -221,5 +250,5 @@ next_gen=generation(popn1)
 parent1 = [1,2,3,4,5,6]
 parent2 = ['a','b','c','d','e','f']
 child = parent1[:3] + parent2[3:]
-print "\n",child
+#print "\n",child
 '''=========================TEST=ENDS=============================='''
