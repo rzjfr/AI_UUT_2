@@ -9,7 +9,7 @@
     #
     #   Language:  Python 2.7
     #     To Run:  python>=v2.7 matplotlib>=v1.0 genetics.py
-    #      input:  "inpux.txt", total population, mutation,tournoment,
+    #      input:  "inpux.txt", population size, mutation,tournoment,
     #              crossover,elitism rates
     #     output:  answer to equation, average fittness of genertions
     # Descripton:  all four methods for evolving a generation to find
@@ -20,9 +20,31 @@ import genetics
 
 # latin alphabet for binomial equation 
 ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
+low=-100    # minimum amount of random numbers
+high=100    # maximum amount of random numbers
+
+
 def start():
     print "null"
+def change_popn(p=0):
+    '''()->int
+    changes current population size to another legal
+    population size
+    >>> change_popn()
+    500
+    '''
+    legal=False
+    while not legal:
+        p = raw_input('> population size:')
+        if not p.isdigit():
+            print " \'%s\' is not a number" %p
+        elif int(p)<20 or int(p)>5000:
+            print " Enter between 20 and 5000"
+        else:
+            legal=True
+    return int(p)
 def main():
+    popltn=1000 # defualt size of population
     print '''
     
     
@@ -46,7 +68,7 @@ def main():
     
     
     '''    
-    commands=['help','q','quit','start','get','rates','popn','hist','log','export log','export hist']
+    commands=['help','q','quit','start','get','show','rates','popn','hist','log','export log','export hist']
     help='''                        =============================
                                 User Help
                         =============================
@@ -65,6 +87,7 @@ COMMANDS
     popn         chenges count of population in each generation
                  defualt is (1000)
     start        starts evolving the generation to find answer
+    show         shows equation and all informations
     hist         shows the histogram of the average fitness of generations
     log          shows the log of all geneartions including average and best
                  fitness of each generation
@@ -101,19 +124,22 @@ COPYRIGHT
             for c in commands:
                 if inputs==c:
                     legal=True    
+        
         if(inputs=='get'):
             cofnt=[]    # coefficient blank list
             powr=[]     # power blank list
             print "Equation:",genetics.make_eq(powr,cofnt),"\n"
         if(inputs=='start'):
-
             start()
         if(inputs=='rates'):
             print 'not implemented'
         if(inputs=='popn'):
-            print 'not implemented'
+            popltn=change_popn()
+        if(inputs=='show'):
+            print "population have %i individuals" %popltn
+            
         if(inputs=='hist'):
-            print 'not implemented' 
+            print 'not implemented'  
         if(inputs=='log'):
             print 'not implemented'
         if(inputs=='export hist'):
