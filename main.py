@@ -8,7 +8,7 @@
     #              Genetic Algorithm
     #
     #   Language:  Python 2.7
-    #     To Run:  python>=v2.7 matplotlib>=v1.0 genetics.py
+    #     To Run:  python>=v2.7 matplotlib>=v1.0 Tkinter genetics.py
     #      input:  "inpux.txt", population size, mutation,tournoment,
     #              crossover,elitism rates
     #     output:  answer to equation, average fittness of genertions
@@ -17,6 +17,8 @@
     #
     ##################################################################
 from random import randint,random
+from Tkinter import *
+from tkFileDialog import askopenfile
 import genetics
 
 # latin alphabet for binomial equation 
@@ -34,9 +36,20 @@ def answer(indiv):
     result=''
     for x in indiv:
         result+=" %s=%i" %(ab[i],x)
-        i+=1
-        
+        i+=1 
     return result
+
+def get_file():
+    ''' ->str
+    reads the file from graphical interface 
+    '''
+    # Load the file from system
+    master = Tk()
+    master.withdraw() #hiding tkinter window
+    str_file = askopenfile(title='Select \"input.txt\" file')
+    print str_file
+    master.quit()
+
 def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
     '''(str,int,float,float,float,float)->list of lists
     gets input string to evolve generation with given rates and population size
@@ -78,6 +91,7 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         #print best
 
     return [index,history_score]
+
 def change_popn(p=0):
     '''()->int
     changes current population size to another legal
@@ -95,6 +109,7 @@ def change_popn(p=0):
         else:
             legal=True
     return int(p)
+
 def change_rate(what,p=0):
     '''(str)->int
     changes current rate to another legal rate
@@ -113,6 +128,7 @@ def change_rate(what,p=0):
     return float(p)/100.0
 
 def main():
+    input_str ="input.txt"
     history_score=None
     ave_answer=[]   # to store where anwser found 
     popltn= 400     # defualt size of population
@@ -144,7 +160,7 @@ def main():
     
     
     '''    
-    commands=['help','q','quit','start','get','show','rates','popn','hist','log','export log','export hist']
+    commands=['help','q','quit','start','get','get file','show','rates','popn','hist','log','export log','export hist']
     help='''                        =============================
                                 User Help
                         =============================
@@ -154,14 +170,15 @@ DESCRIPTION
     this is a simple program finds answer of given equation using GA.
 
 COMMANDS
-    get          imports the "input.txt" to make the equation
+    get          imports the "input.txt" from current directory
+    get file     imports the "input.txt" file from any directory
     rates        changes the defualt  rates in genetic algol.
                  defualt rates are{ (mutation:   15%)
                                     (elitism:     5%)
                                     (tournoment: 15%)
                                     (crossover:  75%) }
     popn         chenges count of population in each generation
-                 defualt is (1000)
+                 defualt is (400)
     start        starts evolving the generation to find answer
     show         shows equation and all informations
     hist         shows the histogram of the average fitness of generations
@@ -206,9 +223,14 @@ COPYRIGHT
             powr=[]     # power blank list
             equation=genetics.make_eq(powr,cofnt)
             print "Equation:",equation,"\n"
+        if(inputs=='get file'):
+            get_file()
+            print "not implemented yet!"
         if(inputs=='start'):
             if equation==None:
-                print " Please import \"input.txt\" first\n  Tip:you can use \'get\' command"
+                print " Please import \"input.txt\" first\n"
+                print "  Tip:you can use \'get\' command to load from current directory"
+                print "      or \'get file\' command to read from another directory"
             else:
                 log=start("input.txt",popltn,elit_rate,cros_rate,mut_rate,tour_rate)
                 ave_answer.append(log[0])
@@ -238,7 +260,7 @@ COPYRIGHT
         if(inputs=='export hist'):
             print 'not implemented'
         if(inputs=='export log'):
-            print 'not implemented'
+            print "not implemented yet!"
         if(inputs=='q' or inputs=='quit'):
             print "Goodbye!\n"
             break 
