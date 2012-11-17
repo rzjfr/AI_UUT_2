@@ -35,7 +35,7 @@ def change_popn(p=0):
     '''
     legal=False
     while not legal:
-        p = raw_input('> population size:')
+        p = raw_input('- population size:')
         if not p.isdigit():
             print " \'%s\' is not a number" %p
         elif int(p)<20 or int(p)>5000:
@@ -43,8 +43,30 @@ def change_popn(p=0):
         else:
             legal=True
     return int(p)
+def change_rate(what,p=0):
+    '''(str)->int
+    changes current rate to another legal rate
+    >>> change_rate('elitism rate')
+    0.75
+    '''
+    legal=False
+    while not legal:
+        p = raw_input('- new %s:'%what)
+        if not p.isdigit():
+            print " \'%s\' is not a number" %p
+        elif int(p)<0 or int(p)>100:
+            print " Enter between 0 and 100"
+        else:
+            legal=True
+    return float(p)/100.0
+    
 def main():
-    popltn=1000 # defualt size of population
+    popltn=1000     # defualt size of population
+    equation=None   # our equation
+    elit_rate=0.05  # elitism rate
+    cros_rate=0.75  # crossover rate
+    mut_rate=0.15   # mutation rate
+    tour_rate=0.15  # tournoment rate
     print '''
     
     
@@ -128,16 +150,24 @@ COPYRIGHT
         if(inputs=='get'):
             cofnt=[]    # coefficient blank list
             powr=[]     # power blank list
-            print "Equation:",genetics.make_eq(powr,cofnt),"\n"
+            equation=genetics.make_eq(powr,cofnt)
+            print "Equation:",equation,"\n"
         if(inputs=='start'):
             start()
         if(inputs=='rates'):
-            print 'not implemented'
+            mut_rate=change_rate('Mutation rate')
+            cros_rate=change_rate('Crossover rate')
+            elit_rate=change_rate('Elitism rate')
+            tour_rate=change_rate('Tournoment rate')
         if(inputs=='popn'):
             popltn=change_popn()
         if(inputs=='show'):
-            print "population have %i individuals" %popltn
-            
+            print "Population have %i Individuals" %popltn
+            print "Equation: ",equation
+            print "Mutation rate= %i" %(mut_rate*100.0),'%'
+            print "Crossover rate= %i" %(cros_rate*100.0),'%'
+            print "Elitism rate= %i" %(elit_rate*100.0),'%'
+            print "Tournoment rate= %i" %(tour_rate*100.0),'%'
         if(inputs=='hist'):
             print 'not implemented'  
         if(inputs=='log'):
