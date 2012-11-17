@@ -224,7 +224,8 @@ high=1
 popltn=1
 length=len_eq("input.txt")
 
-print "Equation:",make_eq(powr,cofnt),"\n"
+#print "Equation:",make_eq(powr,cofnt),"\n"
+make_eq(powr,cofnt)
 popn1=population(popltn,length,low,high)
  
 #print popn1
