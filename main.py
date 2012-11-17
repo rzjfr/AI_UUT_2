@@ -16,7 +16,12 @@
     #              answer in genetic algorithm has been implemented.
     #
     ##################################################################
+import genetics
 
+# latin alphabet for binomial equation 
+ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
+def start():
+    print "null"
 def main():
     print '''
     
@@ -97,9 +102,12 @@ COPYRIGHT
                 if inputs==c:
                     legal=True    
         if(inputs=='get'):
-            print 'not implemented'
+            cofnt=[]    # coefficient blank list
+            powr=[]     # power blank list
+            print "Equation:",genetics.make_eq(powr,cofnt),"\n"
         if(inputs=='start'):
-            print 'not implemented'
+
+            start()
         if(inputs=='rates'):
             print 'not implemented'
         if(inputs=='popn'):
