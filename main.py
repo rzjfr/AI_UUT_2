@@ -19,6 +19,7 @@
 from random import randint,random
 from Tkinter import *
 from tkFileDialog import askopenfile
+import matplotlib.pyplot as plt 
 import genetics
 
 # latin alphabet for binomial equation 
@@ -61,6 +62,8 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
     >>> start("input.txt",400)
     [3456,[12.0,11.6,5.0,2.1,1]]
     '''
+    plt.xlabel('# of Generation')               # x lable for our histogram
+    plt.ylabel('Average fitness of population') # y lable for our histogram
     length= genetics.len_eq(input_str)
     popn1=genetics.population(popltn,length,low,high)
     history_score = [genetics.score(popn1),]
@@ -76,19 +79,26 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         if best[1]>genetics.fitness(next_gen[0]):
             best=[next_gen[0],genetics.fitness(next_gen[0]),i]
         next_gen = genetics.generation(next_gen,elit_rate,cros_rate,mut_rate,tour_rate)
+        # here we want to show the histogram as the algorithm working
+        plt.plot(index,genetics.score(next_gen),color='b',marker='o')
+        plt.pause(0.05)     # we puase to make the histogram dynamic
         if int(genetics.fitness(next_gen[0]))==0:
             found=True
             break
+            #plt.show()
     if found:
+        
         print " The ansewer is:"
         print "",next_gen[0]
         print answer(next_gen[0])
         print " Fitness \'%i\' found in %i\'s generation" %(genetics.fitness(next_gen[0]),index)
+        plt.show()
     else:
         print " The answer not found in 10000 generation"
         print "  But the best guessed fitness is\'",best[1],"\' found in ",best[2],"\'s generation"
         print "  Aproximate answer is:\n",answer(best[0])
         #print best
+        plt.show()
 
     return [index,history_score]
 
@@ -126,6 +136,15 @@ def change_rate(what,p=0):
         else:
             legal=True
     return float(p)/100.0
+def static_hist(history_score):
+    '''(list)->histogram
+    creats a histogram from fitness history of generations 
+    '''
+    plt.xlabel('# of Generation')
+    plt.ylabel('Average fitness of population')
+    plt.plot(history_score,color='r')
+    plt.show()
+    
 
 def main():
     input_str ="input.txt"
@@ -250,7 +269,7 @@ COPYRIGHT
             print " Elitism rate= %i" %(elit_rate*100.0),'%'
             print " Tournoment rate= %i" %(tour_rate*100.0),'%'
         if(inputs=='hist'):
-            print 'not implemented'  
+            static_hist(history_score)  
         if(inputs=='log'):
             print " Average fitness of each generation for last attempt:"
             print "",history_score
