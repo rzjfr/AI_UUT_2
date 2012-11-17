@@ -49,10 +49,12 @@ def make_eq(powr,cofnt,i=0,result=""):
             result+= " (-%s)^%i " %(ab[i],y)    
         elif y==1 and x==1:
             result+= " %s " %(ab[i])
-        elif y==0 or x==0:
+        elif x==0:
             i-=1
+        elif y==0:
+            result+= " %i " %(x)
         else:
-            result+= " (%i%s)^%s " %(x,ab[i],y)
+            result+= " %i(%s^%s) " %(x,ab[i],y)
         i+=1
         if i !=len(z):
             result+="+"
@@ -97,7 +99,7 @@ def summs(powr,cofnt,indiv):
     i=0
     result=0
     for x in xrange(len(powr)):
-        result+=(cofnt[i]*indiv[i])**powr[i]
+        result+=cofnt[i]*(indiv[i]**powr[i])
         i+=1
     return result
 
@@ -215,22 +217,29 @@ def generation(popn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
     return next_popn
 
 
+#'''
 
-'''=========================TEST==================================='''
-low=-100
-high=100
-popltn=1000
+low=-1
+high=1
+popltn=1
 length=len_eq("input.txt")
+
 print "Equation:",make_eq(powr,cofnt),"\n"
 popn1=population(popltn,length,low,high)
  
-print popn1
+#print popn1
 
-print score(popn1)
-print generation(popn1)
+score(popn1)
+fitness(popn1[0])
+generation(popn1)
+'''
+history_score = [score(popn1),]
+history_fitness=[fitness(popn1[0]),]
 next_gen = generation(popn1)
 for i in xrange(10000):
     print score(next_gen),fitness(next_gen[0])
+    history_score.append(score(next_gen))
+    history_fitness.append(fitness(next_gen[0]))
     next_gen = generation(next_gen)
     if int(fitness(next_gen[0]))==0:
         print "found!"
@@ -239,5 +248,10 @@ print "best guess fitness is:",fitness(next_gen[0])
 #if fitness(next_gen[0])>0:
 #print float(100/13),"%"
 print next_gen[0]
+print history_fitness
+print history_score
 
-'''=========================TEST=ENDS=============================='''
+'''
+
+
+
