@@ -134,6 +134,26 @@ def score(popn, target=0):
     summ= sum([fitness(x, target) for x in popn])
     return summ / (len(popn) * 1.0)
 
+def tournoment(popn,next_popn=[],tour_rate=0.15):
+    '''(list of lsit,list of list,float)->list of list
+    our tournoment is Roulette Wheel Selection so the
+    individual with higher fitness have more chance
+    >>>tournoment(popn)
+    [[-19, -58, 71, 84, -62], [92, -92, -8, -99, 27]]
+    '''
+    popn_clone = [ (fitness(x), x) for x in popn]
+    best=sorted(popn_clone)[0][0]             # we need best to find the fraction
+    if best==0:best=1       # we don't want to ignore the zero fitness
+    for individual in popn_clone:
+        if individual[0]==0:individual[0]=1
+    popn_clone = [ (best/(x[0]*1.0),x[1]) for x in popn_clone]
+    for individual in popn_clone:               # tournoment is Roulette Wheel Selection 
+        if individual[0]*tour_rate > random():  # here we choose randomly from scored population
+            next_popn.append(individual[1])     # so the higher fitnessed indiv. have more chance
+            popn.remove(individual[1])          # we don't want to choose this chromosome again!
+    return next_popn
+
+
 def crossover(parent1,parent2,length):
     '''(list,list,int)->list of list
     dsc:
@@ -172,11 +192,13 @@ def generation(popn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
     
 
     '''Tournoment'''
+    '''
     for individual in cur_popn:             # tournoment is Roulette Wheel Selection 
         if tour_rate > random():            # here we choose randomly from scored population
             next_popn.append(individual)    # so the higher fitnessed indiv. have more chance
             cur_popn.remove(individual)
-      
+    '''
+    tournoment(cur_popn,next_popn,tour_rate)  
     #len_cur =len(next_popn)    # current lenght of next population
     len_rest= len(cur_popn)     # to fill rest of population
     if len_rest%2 !=0:          # we want pairs for crossover  

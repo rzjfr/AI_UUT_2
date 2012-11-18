@@ -16,7 +16,7 @@
     #              answer in genetic algorithm has been implemented.
     #
     ##################################################################
-
+from random import randint,random
 from Tkinter import *
 from tkFileDialog import askopenfile
 import matplotlib.pyplot as plt 
@@ -24,8 +24,8 @@ import genetics
 
 # latin alphabet for binomial equation 
 ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
-low=-100    # minimum amount of random numbers
-high=100    # maximum amount of random numbers
+low=-20    # minimum amount of random numbers
+high=20    # maximum amount of random numbers
 
 def answer(indiv):
     '''(list)->str
@@ -76,7 +76,7 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
     best=[next_gen[0],genetics.fitness(next_gen[0]),0]
     for i in xrange(10000):
         index+=1
-        print genetics.score(next_gen),genetics.fitness(next_gen[0])
+        if not show_hist:print genetics.score(next_gen),genetics.fitness(next_gen[0])
         history_score.append(genetics.score(next_gen))
         # here we check the best answer if answer not found
         if best[1]>genetics.fitness(next_gen[0]):
@@ -89,9 +89,7 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         if int(genetics.fitness(next_gen[0]))==0:
             found=True
             break
-            #plt.show()
     if found:
-        
         print " The ansewer is:"
         print "",next_gen[0]
         print answer(next_gen[0])
@@ -99,11 +97,9 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         if show_hist:plt.show()
     else:
         print " The answer not found in 10000 generation"
-        print "  But the best guessed fitness is\'",best[1],"\' found in ",best[2],"\'s generation"
+        print "  But the best guessed fitness is \'%i" %best[1]," found in ",best[2],"\'s generation"
         print "  Aproximate answer is:\n",answer(best[0])
-        #print best
-        plt.show()
-
+        if show_hist:plt.show()
     return [index,history_score]
 
 def change_popn(p=0):
@@ -290,7 +286,7 @@ COPYRIGHT
             print "",ave_answer
             print " In average answer found at ",sum(ave_answer)/(len(ave_answer)*1.0)
         if(inputs=='export hist'):
-            print 'not implemented'
+            print "not implemented yet!"
         if(inputs=='export log'):
             print "not implemented yet!"
         if(inputs=='q' or inputs=='quit'):
