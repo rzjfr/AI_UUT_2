@@ -16,7 +16,7 @@
     #              answer in genetic algorithm has been implemented.
     #
     ##################################################################
-from random import randint,random
+from random import randint
 from Tkinter import *
 from tkFileDialog import askopenfile
 import matplotlib.pyplot as plt 
@@ -85,7 +85,7 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         if show_hist:
             # here we want to show the histogram as the algorithm working
             plt.plot(index,genetics.score(next_gen),color='b',marker='o')
-            plt.pause(0.000001)     # we puase to make the histogram dynamic
+            plt.pause(0.0000001)     # we puase to make the histogram dynamic
         if int(genetics.fitness(next_gen[0]))==0:
             found=True
             break
@@ -246,7 +246,11 @@ COPYRIGHT
             print "Equation:",equation,"\n"
         if(inputs=='get file'):
             get_file()
-            print "not implemented yet!"
+            cofnt=[]    # coefficient blank list
+            powr=[]     # power blank list
+            equation=genetics.make_eq(powr,cofnt)
+            print "Equation:",equation,"\n"
+            print " not implemented Properly!"
         if(inputs=='start'):
             if equation==None:
                 print " Please import \"input.txt\" first\n"
@@ -286,7 +290,10 @@ COPYRIGHT
             print "",ave_answer
             print " In average answer found at ",sum(ave_answer)/(len(ave_answer)*1.0)
         if(inputs=='export hist'):
-            print "not implemented yet!"
+            save_name="histogram_%i.png" %(randint(100,999))
+            print " Histogram Saved in",save_name
+            plt.savefig(save_name)
+            print " not implemented Properly!"
         if(inputs=='export log'):
             print "not implemented yet!"
         if(inputs=='q' or inputs=='quit'):
