@@ -4,7 +4,7 @@ powr=[]     # power blank list
 # latin alphabet for binomial equation 
 ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
 
-def load_data(file1,cofnt=[],powr=[]):
+def load_data(str_file,cofnt=[],powr=[]):
     '''
     dsc: loads Coefficient and Power into seperate lists 
     from .txt file
@@ -12,7 +12,7 @@ def load_data(file1,cofnt=[],powr=[]):
     >>>load_data("input.txt",cofnt,powr)
     [('8', '2'), ('3', '3'), ('2', '4'), ('5', '2'), ('1', '5')]
     '''
-    f = open(file1)
+    f = open(str_file)
     c=[]
     c+= f.readline().split()
     for ch in c:
@@ -25,7 +25,7 @@ def load_data(file1,cofnt=[],powr=[]):
     return zip(cofnt,powr)
 
 
-def make_eq(powr,cofnt,i=0,result=""):
+def make_eq(powr,cofnt,str_file):
     '''
     (list,list)->str
     dsc: loads data and returns an equation of imported data
@@ -33,8 +33,10 @@ def make_eq(powr,cofnt,i=0,result=""):
     example:
     >>>make_eq([1 2 -1 1 -1 ],[+1 +1 2 1 1])
     a + 2b + (-c)^2 + d + (-e) +0= 0
-    '''    
-    z=load_data("input.txt",cofnt,powr)
+    '''
+    i=0
+    result=""   
+    z=load_data(str_file,cofnt,powr)
     # at this point we want a flexible equation appearance
     for x,y in z:
         if x==1 and y!=1 and y!=0:
@@ -198,7 +200,10 @@ def generation(popn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
             next_popn.append(individual)    # so the higher fitnessed indiv. have more chance
             cur_popn.remove(individual)
     '''
-    tournoment(cur_popn,next_popn,tour_rate)  
+    
+    tournoment(cur_popn,next_popn,tour_rate)    # this is our tourniment method 
+    
+     
     #len_cur =len(next_popn)    # current lenght of next population
     len_rest= len(cur_popn)     # to fill rest of population
     if len_rest%2 !=0:          # we want pairs for crossover  
@@ -221,7 +226,7 @@ def generation(popn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
         cur_popn.remove(cur_popn[j])
         # with constant probabality corossover happens
         if cros_rate > random():
-            childrens=crossover(parent1,parent2,len(parent1))
+            childrens=crossover(parent1,parent2,len(parent1))   # here is crossover method  
             next_popn.extend(childrens)
         # or they will be sent to next population as they are
         else:
@@ -247,7 +252,7 @@ popltn=1
 length=len_eq("input.txt")
 
 #print "Equation:",make_eq(powr,cofnt),"\n"
-make_eq(powr,cofnt)
+make_eq(powr,cofnt,"input.txt")
 popn1=population(popltn,length,low,high)
  
 #print popn1

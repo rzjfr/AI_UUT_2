@@ -18,7 +18,7 @@
     ##################################################################
 from random import randint
 from Tkinter import *
-from tkFileDialog import askopenfile
+from tkFileDialog import askopenfilename#,askopenfile
 import matplotlib.pyplot as plt 
 import genetics
 
@@ -47,9 +47,9 @@ def get_file():
     # Load the file from system
     master = Tk()
     master.withdraw() #hiding tkinter window
-    str_file = askopenfile(title='Select \"input.txt\" file')
-    print str_file
+    str_file = askopenfilename(title='Select \"input.txt\" file')
     master.quit()
+    return str_file
 
 def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15,show_hist=True):
     '''(str,int,float,float,float,float)->list of lists
@@ -188,23 +188,19 @@ def main():
 
 
 DESCRIPTION
-    this is a simple program finds answer of given equation using GA.
+    this is a simple program finds answer of given multinomial equation with GA.
 
 COMMANDS
     get          imports the "input.txt" from current directory
     get file     imports the "input.txt" file from any directory
     rates        changes the defualt  rates in genetic algol.
-                 defualt rates are{ (mutation:   15%)
-                                    (elitism:     5%)
-                                    (tournoment: 15%)
-                                    (crossover:  75%) }
-    popn         chenges count of population in each generation
-                 defualt is (400)
+                 defualt rates are{ (mutation:   15%) (elitism:     5%)
+                                    (tournoment: 15%) (crossover:  75%) }
+    popn         chenges count of indiv. in population defualt is (400)
     start        starts evolving the generation to find answer
     show         shows equation and all informations
     hist         shows the histogram of the average fitness of generations
-    log          shows the log of all geneartions including average and other
-                 usful information and statistics about total attempts
+    log          shows the history log and some statistics
     export hist  exports histogram as .png file format
     export log   exports log as .txt file
     q,quit       exit the programm
@@ -213,8 +209,7 @@ AUTHOR
     written by rzjfr. Maraush
     
 COPYRIGHT
-    License GPLv3+:GNU GPL version 3 or later<http://gnu.org/licenses/gpl.html>
-    '''
+    License GPLv3+:GNU GPL version 3 or later<http://gnu.org/licenses/gpl.html>'''
     while(1):
         inputs = raw_input('> ')
         legal=False
@@ -242,15 +237,14 @@ COPYRIGHT
         if(inputs=='get'):
             cofnt=[]    # coefficient blank list
             powr=[]     # power blank list
-            equation=genetics.make_eq(powr,cofnt)
+            equation=genetics.make_eq(powr,cofnt,input_str)
             print "Equation:",equation,"\n"
         if(inputs=='get file'):
-            get_file()
+            input_str=get_file()
             cofnt=[]    # coefficient blank list
             powr=[]     # power blank list
-            equation=genetics.make_eq(powr,cofnt)
+            equation=genetics.make_eq(powr,cofnt,input_str)
             print "Equation:",equation,"\n"
-            print " not implemented Properly!"
         if(inputs=='start'):
             if equation==None:
                 print " Please import \"input.txt\" first\n"
@@ -301,5 +295,5 @@ COPYRIGHT
             break 
         if(inputs=='help'):
             print help
-            raw_input(': Press any Key')
+            raw_input(': Press any Key...')
 if __name__ == "__main__": main()
