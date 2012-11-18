@@ -16,7 +16,7 @@
     #              answer in genetic algorithm has been implemented.
     #
     ##################################################################
-from random import randint,random
+
 from Tkinter import *
 from tkFileDialog import askopenfile
 import matplotlib.pyplot as plt 
@@ -24,8 +24,8 @@ import genetics
 
 # latin alphabet for binomial equation 
 ab=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w']
-low=-10    # minimum amount of random numbers
-high=10    # maximum amount of random numbers
+low=-100    # minimum amount of random numbers
+high=100    # maximum amount of random numbers
 
 def answer(indiv):
     '''(list)->str
@@ -51,10 +51,11 @@ def get_file():
     print str_file
     master.quit()
 
-def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15):
+def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate=0.15,show_hist=True):
     '''(str,int,float,float,float,float)->list of lists
     gets input string to evolve generation with given rates and population size
     calculates the best fittness
+    also we choose wheater to show the histogram during evelutoin or not
     returns generation number that answer has been found
     we will use index number to calculate the average index of answers
     returns average fitness of population in each generation
@@ -62,6 +63,8 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
     >>> start("input.txt",400)
     [3456,[12.0,11.6,5.0,2.1,1]]
     '''
+    plt.grid(True)      # turning on grid for our histogram
+    plt.title('Multinomial Equation answers using GA ')
     plt.xlabel('# of Generation')               # x lable for our histogram
     plt.ylabel('Average fitness of population') # y lable for our histogram
     length= genetics.len_eq(input_str)
@@ -75,13 +78,14 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         index+=1
         print genetics.score(next_gen),genetics.fitness(next_gen[0])
         history_score.append(genetics.score(next_gen))
-        #history_fitness.append(fitness(next_gen[0]))
+        # here we check the best answer if answer not found
         if best[1]>genetics.fitness(next_gen[0]):
             best=[next_gen[0],genetics.fitness(next_gen[0]),i]
         next_gen = genetics.generation(next_gen,elit_rate,cros_rate,mut_rate,tour_rate)
-        # here we want to show the histogram as the algorithm working
-        plt.plot(index,genetics.score(next_gen),color='b',marker='o')
-        plt.pause(0.05)     # we puase to make the histogram dynamic
+        if show_hist:
+            # here we want to show the histogram as the algorithm working
+            plt.plot(index,genetics.score(next_gen),color='b',marker='o')
+            plt.pause(0.000001)     # we puase to make the histogram dynamic
         if int(genetics.fitness(next_gen[0]))==0:
             found=True
             break
@@ -92,7 +96,7 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         print "",next_gen[0]
         print answer(next_gen[0])
         print " Fitness \'%i\' found in %i\'s generation" %(genetics.fitness(next_gen[0]),index)
-        plt.show()
+        if show_hist:plt.show()
     else:
         print " The answer not found in 10000 generation"
         print "  But the best guessed fitness is\'",best[1],"\' found in ",best[2],"\'s generation"
@@ -140,6 +144,8 @@ def static_hist(history_score):
     '''(list)->histogram
     creats a histogram from fitness history of generations 
     '''
+    plt.grid(True)
+    plt.title('Multinomial Equation answers using GA ')
     plt.xlabel('# of Generation')
     plt.ylabel('Average fitness of population')
     plt.plot(history_score,color='r')
@@ -251,7 +257,16 @@ COPYRIGHT
                 print "  Tip:you can use \'get\' command to load from current directory"
                 print "      or \'get file\' command to read from another directory"
             else:
-                log=start("input.txt",popltn,elit_rate,cros_rate,mut_rate,tour_rate)
+                
+                legal=False
+                while not legal:
+                    ans = raw_input('> Show the Histogram?[y/n] ')
+                    if ans=='y' or ans=='n':
+                        legal =True
+                if ans=='y':
+                    log=start(input_str,popltn,elit_rate,cros_rate,mut_rate,tour_rate)
+                else:
+                    log=start(input_str,popltn,elit_rate,cros_rate,mut_rate,tour_rate,False)
                 ave_answer.append(log[0])
                 history_score=log[1]
         if(inputs=='rates'):
@@ -264,10 +279,8 @@ COPYRIGHT
         if(inputs=='show'):
             print " Equation: ",equation
             print " Population have %i Individuals" %popltn
-            print " Mutation rate= %i" %(mut_rate*100.0),'%'
-            print " Crossover rate= %i" %(cros_rate*100.0),'%'
-            print " Elitism rate= %i" %(elit_rate*100.0),'%'
-            print " Tournoment rate= %i" %(tour_rate*100.0),'%'
+            print " Mutation rate= %i" %(mut_rate*100.0),'%',"\t Crossover rate= %i" %(cros_rate*100.0),'%'
+            print " Elitism rate= %i" %(elit_rate*100.0),'%',"\t Tournoment rate= %i" %(tour_rate*100.0),'%'
         if(inputs=='hist'):
             static_hist(history_score)  
         if(inputs=='log'):
@@ -285,5 +298,5 @@ COPYRIGHT
             break 
         if(inputs=='help'):
             print help
-            raw_input(':')
+            raw_input(': Press any Key')
 if __name__ == "__main__": main()
