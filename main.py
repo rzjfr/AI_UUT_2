@@ -286,8 +286,9 @@ COPYRIGHT
         if(inputs=='export hist'):
             save_name="histogram_%i.png" %(randint(100,999))
             print " Histogram Saved in",save_name
+            plt.plot(history_score)
+            #plt.show()
             plt.savefig(save_name)
-            print " not implemented Properly!"
         if(inputs=='export log'):
             print "not implemented yet!"
         if(inputs=='q' or inputs=='quit'):
