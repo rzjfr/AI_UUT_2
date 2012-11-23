@@ -63,10 +63,11 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
     >>> start("input.txt",400)
     [3456,[12.0,11.6,5.0,2.1,1]]
     '''
-    plt.grid(True)      # turning on grid for our histogram
-    plt.title('Multinomial Equation answers using GA ')
-    plt.xlabel('# of Generation')               # x lable for our histogram
-    plt.ylabel('Average fitness of population') # y lable for our histogram
+    if show_hist:
+        plt.grid(True)      # turning on grid for our histogram
+        plt.title('Multinomial Equation answers using GA ')
+        plt.xlabel('# of Generation')               # x lable for our histogram
+        plt.ylabel('Average fitness of population') # y lable for our histogram
     length= genetics.len_eq(input_str)
     popn1=genetics.population(popltn,length,low,high)
     history_score = [genetics.score(popn1),]
@@ -75,19 +76,23 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
     found=False
     best=[next_gen[0],genetics.fitness(next_gen[0]),0]
     for i in xrange(10000):
-        index+=1
-        if not show_hist:print genetics.score(next_gen),genetics.fitness(next_gen[0])
-        history_score.append(genetics.score(next_gen))
-        # here we check the best answer if answer not found
-        if best[1]>genetics.fitness(next_gen[0]):
-            best=[next_gen[0],genetics.fitness(next_gen[0]),i]
-        next_gen = genetics.generation(next_gen,elit_rate,cros_rate,mut_rate,tour_rate)
-        if show_hist:
-            # here we want to show the histogram as the algorithm working
-            plt.plot(index,genetics.score(next_gen),color='b',marker='o')
-            plt.pause(0.0000001)     # we puase to make the histogram dynamic
-        if int(genetics.fitness(next_gen[0]))==0:
-            found=True
+        try:
+            index+=1
+            if not show_hist:print genetics.score(next_gen),genetics.fitness(next_gen[0])
+            history_score.append(genetics.score(next_gen))
+            # here we check the best answer if answer not found
+            if best[1]>genetics.fitness(next_gen[0]):
+                best=[next_gen[0],genetics.fitness(next_gen[0]),i]
+            next_gen = genetics.generation(next_gen,elit_rate,cros_rate,mut_rate,tour_rate)
+            if show_hist:
+                # here we want to show the histogram as the algorithm working
+                plt.plot(index,genetics.score(next_gen),color='b',marker='o')
+                plt.pause(0.0000001)     # we puase to make the histogram dynamic
+            if int(genetics.fitness(next_gen[0]))==0:
+                found=True
+                break
+        except KeyboardInterrupt:
+            print "\nStoped!..."
             break
     if found:
         print " The ansewer is:"
@@ -96,8 +101,8 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         print " Fitness \'%i\' found in %i\'s generation" %(genetics.fitness(next_gen[0]),index)
         if show_hist:plt.show()
     else:
-        print " The answer not found in 10000 generation"
-        print "  But the best guessed fitness is \'%i" %best[1]," found in ",best[2],"\'s generation"
+        print " The answer not found in %i generation" %index
+        print "  But the best guessed fitness is \'%i\'" %best[1]," found in ",best[2],"\'s generation"
         print "  Aproximate answer is:\n",answer(best[0])
         if show_hist:plt.show()
     return [index,history_score]
@@ -197,7 +202,7 @@ COMMANDS
                  defualt rates are{ (mutation:   15%) (elitism:     5%)
                                     (tournoment: 15%) (crossover:  75%) }
     popn         chenges count of indiv. in population defualt is (400)
-    start        starts evolving the generation to find answer
+    start        evolving the generation to find answer (Ctrl+c to stop)
     show         shows equation and all informations
     hist         shows the histogram of the average fitness of generations
     log          shows the history log and some statistics
