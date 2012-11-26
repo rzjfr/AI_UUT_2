@@ -94,6 +94,7 @@ def start(input_str,popltn,elit_rate=0.05,cros_rate=0.75,mut_rate=0.15,tour_rate
         except KeyboardInterrupt:
             print "\nStoped!..."
             break
+            plt.close()
     if found:
         print " The ansewer is:"
         print "",next_gen[0]
@@ -125,12 +126,13 @@ def change_popn(p=0):
             legal=True
     return int(p)
 
-def change_rate(what,p=0):
+def change_rate(what):
     '''(str)->int
     changes current rate to another legal rate
     >>> change_rate('elitism rate')
     0.75
     '''
+    p=0
     legal=False
     while not legal:
         p = raw_input('- new %s:'%what)
