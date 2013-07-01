@@ -1,0 +1,8 @@
+/src
+.pydevproject
+.project
+*.pyc
+*.png
+*.txt
+*.txt~
+input*
